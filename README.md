@@ -33,10 +33,10 @@ void dectPing()
    parallax_ping ping(d11);
 
    while (1) {
-      if(float(ping) < 20) {
+      if (float(ping) < 20) {
          d4 = 1;
 
-         if(!led1) {
+         if (!led1) {
             car.stop();
             car.goStraight(-200);
             ThisThread::sleep_for(100ms);
