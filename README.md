@@ -120,6 +120,7 @@ void park()
       }
    }
 }
+```
 
 ## Line-following mode
 Read the signal from openMV, and do the corresponding action.\
