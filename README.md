@@ -361,7 +361,7 @@ def park_mode():
 ```
 
 ## [Line]
-Turn the line-following mode in mbed.
+Turn on the line-following mode in mbed.
 ``` bash
 def line_mode():
     print("[Line]: enter line mode")
@@ -381,7 +381,7 @@ def line_mode():
 ```
 
 ## [Aptag]
-Turn the AprilTag-following mode in mbed.
+Turn on the AprilTag-following mode in mbed.
 ``` bash
 def aptag_mode():
     print("[Aptag]: enter aptag mode")
