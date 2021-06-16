@@ -91,19 +91,19 @@ void readRPC()
 }
 ```
 
-## Parking mode
-Here, mbed does nothing in parking mode.
+## Geku mode
+Here, mbed does nothing in Geku mode.
 ``` bash
 ''' global variable '''
 DigitalOut led3(LED3); # enable
 DigitalOut is_start(D2); # for start signal (py)
 DigitalOut is_end(D3);   # for end signal (py)
 
-Thread park_thread;
-EventQueue park_event;
+Thread geku_thread;
+EventQueue geku_event;
 
 ''' function '''
-void park()
+void geku()
 {
    while (1) {
       if (led3) {
@@ -397,6 +397,42 @@ def aptag_mode():
     stop()
 
     print("[Aptag]: leave aptag mode")
+```
+## [Geku]
+Display "Geku" from Lee Sin's R in LOL.
+``` bash
+def geku_mode():
+    s.write("/LED3/write 1 \n".encode())
+    s.write("/start/write 1 \n".encode())
+    print("!!!Geku~~~!!!")
+
+    # first enemy
+    go_forward(25)
+    time.sleep(0.5)
+    print ("spin counterclockwise 360 degree")
+    s.write("/turn/run 200 -1 \n".encode())
+    time.sleep(2.2)
+    s.write("/stop/run \n".encode())
+    time.sleep(0.5)
+    # second enemy
+    go_forward(30)
+    time.sleep(0.5)
+    print ("spin counterclockwise 270 degree")
+    s.write("/turn/run 200 -1 \n".encode())
+    time.sleep(1.5)
+    s.write("/stop/run \n".encode())
+    time.sleep(0.5)
+    # third enemy
+    go_back(30)
+    time.sleep(0.5)
+    print ("spin clockwise 180 degree")
+    s.write("/turn/run 200 1 \n".encode())
+    time.sleep(1)
+    s.write("/stop/run \n".encode())
+    time.sleep(0.5)
+    go_forward(30)
+    s.write("/end/write 1 \n".encode())
+    s.write("/LED3/write 0 \n".encode())
 ```
 
 # PC (car_message.py)
