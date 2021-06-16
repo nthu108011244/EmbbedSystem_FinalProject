@@ -20,7 +20,7 @@ BufferedSerial uart(D10,D9); //tx,rx
 /* DigitalOut */
 DigitalOut led1(LED1); // for aptag
 DigitalOut led2(LED2); // for line 
-DigitalOut led3(LED3); // for park
+DigitalOut led3(LED3); // for geku
 DigitalOut is_start(D2); // for start signal (py)
 DigitalOut is_end(D3);   // for end signal (py)
 DigitalOut d4(D4);     // for ping's LED(red)
@@ -38,21 +38,21 @@ RpcDigitalOut RPCd3(D3,"end");
 
 /* Thread */
 Thread rpc_thread;
-Thread park_thread;
+Thread geku_thread;
 Thread line_thread;
 Thread aptag_thread;
 Thread ping_thread;
 
 /* EventQueue */
 EventQueue rpc_event;
-EventQueue park_event;
+EventQueue geku_event;
 EventQueue line_event;
 EventQueue aptag_event;
 EventQueue ping_event;
 
 /* Function */
 void readRPC();   // read RPC command
-void park();
+void geku();
 void line();
 void aptag();
 void dectPing();
@@ -63,12 +63,12 @@ int main()
 {
    /* set up three mode */
    rpc_event.call(&readRPC);
-   park_event.call(&park);
+   geku_event.call(&geku);
    line_event.call(&line);
    aptag_event.call(&aptag);
    //ping_event.call(&dectPing);
    rpc_thread.start(callback(&rpc_event, &EventQueue::dispatch_forever));
-   park_thread.start(callback(&park_event, &EventQueue::dispatch_forever));
+   geku_thread.start(callback(&geku_event, &EventQueue::dispatch_forever));
    line_thread.start(callback(&line_event, &EventQueue::dispatch_forever));
    aptag_thread.start(callback(&aptag_event, &EventQueue::dispatch_forever));
    //ping_thread.start(callback(&ping_event, &EventQueue::dispatch_forever));
@@ -97,18 +97,18 @@ void readRPC()
    }
 }
 
-void park()
+void geku()
 {
    while (1) {
       if (led3) {
          if (is_start) {
             is_start = 0;
-            char buffer[] = "[Park]: mission start\n"; 
+            char buffer[] = "[Geku]: mission start\n"; 
             xbee.write(buffer, 22);
          }
          if (is_end) {
             is_end = 0;
-            char buffer[] = "[Park]: mission complete\n"; 
+            char buffer[] = "[Geku]: mission complete\n"; 
             xbee.write(buffer, 25);
          }
       }
@@ -160,15 +160,16 @@ void dectPing()
       if(float(ping) < 20) {
          d4 = 1;
 
-         if(!led1) {
+         if(!led1 && !led3) {
             car.stop();
             car.goStraight(-200);
             ThisThread::sleep_for(100ms);
             car.stop();
          }
-         else if (float(ping) < 10) {
-            char buffer[] = "[Aptag]: mission complete\n"; 
-            xbee.write(buffer, 26);
+         else if (led1 && float(ping) < 10) {
+            char buffer[50] = {0};
+            sprintf(buffer, "[Aptag]: mission complete (Ping: %.2f)\n", float(ping)); 
+            xbee.write(buffer, 39);
          }
       }
       else {

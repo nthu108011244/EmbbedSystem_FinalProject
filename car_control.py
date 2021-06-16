@@ -57,6 +57,9 @@ def get_command():
     elif command == "aptag":
         aptag_mode()
         return 1
+    elif command == "geku":
+        geku_mode()
+        return 1
     else:
         print(command[:] + " is not keyword")
         return 1
@@ -184,6 +187,39 @@ def aptag_mode():
 
     print("[Aptag]: leave aptag mode")
 
+def geku_mode():
+    s.write("/LED3/write 1 \n".encode())
+    s.write("/start/write 1 \n".encode())
+    print("!!!Geku~~~!!!")
+
+    # first enemy
+    go_forward(25)
+    time.sleep(0.5)
+    print ("spin counterclockwise 360 degree")
+    s.write("/turn/run 200 -1 \n".encode())
+    time.sleep(2.2)
+    s.write("/stop/run \n".encode())
+    time.sleep(0.5)
+    # second enemy
+    go_forward(30)
+    time.sleep(0.5)
+    print ("spin counterclockwise 270 degree")
+    s.write("/turn/run 200 -1 \n".encode())
+    time.sleep(1.5)
+    s.write("/stop/run \n".encode())
+    time.sleep(0.5)
+    # third enemy
+    go_back(30)
+    time.sleep(0.5)
+    print ("spin clockwise 180 degree")
+    s.write("/turn/run 200 1 \n".encode())
+    time.sleep(1)
+    s.write("/stop/run \n".encode())
+    time.sleep(0.5)
+    go_forward(30)
+    s.write("/end/write 1 \n".encode())
+    s.write("/LED3/write 0 \n".encode())
+
 
 def go_forward(length):
     print(f"go forward {length} cm")
@@ -200,7 +236,7 @@ def go_back(length):
 def spin_clockwise():
     print ("spin clockwise 90 degree")
     s.write("/turn/run 200 1 \n".encode())
-    time.sleep(0.4)
+    time.sleep(0.45)
     s.write("/stop/run \n".encode())
 
 def spin_couneterclockwise():
